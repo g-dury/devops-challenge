@@ -4,4 +4,7 @@ services:
   - docker
 
 script:
-  - docker build -t python-app-test .
+  - docker build -t gdury/python-app-test .
+after_success:
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+  - docker push gdury/python-app-test:$TRAVIS_BRANCH-$TRAVIS_COMMIT; 
