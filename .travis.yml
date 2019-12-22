@@ -3,8 +3,10 @@ language: python
 services:
   - docker
 
+before_install:
+ - VERSION="$TRAVIS_BRANCH-${TRAVIS_COMMIT:0:5}"
 script:
-  - docker build -t gdury/python-app-test .
+  - docker build -t gdury/python-app-test:$VERSION .
 after_success:
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-  - docker push gdury/python-app-test:$TRAVIS_BRANCH-$TRAVIS_COMMIT; 
+  - docker push gdury/python-app-test:$VERSION; 
