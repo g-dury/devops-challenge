@@ -2,7 +2,8 @@ version: "3.7"
 
 services:
   pythonapp:
-    image: python-app-test:latest
+    build: ./app
+    image: python-app-test:master-bb323a
     ports:
       - "8080:8080"
     networks:

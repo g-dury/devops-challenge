@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: python
-        image: gdury/python-app-test:latest1
+        image: gdury/python-app-test:master-bb323a
         env:
         - name: MONGO_URI
           valueFrom:

@@ -215,3 +215,95 @@ Once you've got dockerized all the API components *(python app and database)*, y
 If you are a container hero, an excellent DevOps... We want to see your expertise. Use a kubernetes system to deploy the `API`. We recommend you to use tools like [minikube](https://kubernetes.io/docs/setup/minikube/) or [microk8s](https://microk8s.io/).
 
 Write the deployment file *(yaml file)* used to deploy your `API` *(python app and mongodb)*.
+
+
+### Results & How to
+
+All the challenges have been solved and here is a small brief to know how to run my solution.
+
+The stack is composed of three docker containers:
+
+- python-app 
+- mongodb 
+- mongo-seed (to seed the database with the data)
+
+#### docker-compose 
+
+To start the stack with docker-compose, you will need some .env files gathering the environment variables necessary to run the app:
+
+.app-secret
+
+```
+MONGO_URI=mongodb:/USER:PASSWORD@mongodb:27017/DB_NAME
+```
+
+.mongo-secret
+
+```
+MONGO_INITDB_ROOT_USERNAME=ROOT_USERNAME
+MONGO_INITDB_ROOT_PASSWORD=ADMIN_PASS
+MONGO_INITDB_DATABASE=DB_NAME
+MONGO_NON_ROOT_USERNAME=USER
+MONGO_NON_ROOT_PASSWORD=PASSWORD
+MONGO_HOST=mongodb
+```
+
+`docker-compose up -d` 
+
+And then you can call your API on your `localhost:8080`
+
+#### kubernetes
+
+If you want to run it on kubernetes, you can go on into the kubernetes folder:
+
+You will first need to set a few environment variables, modify some files to make sure all credentials are properly set:
+
+in `app-secret.yaml` you need to add the base64 encoded string for the `MONGO_URI` connection string.
+
+WARNING: Because we are using a different version of mongodb than in docker-compose the string has to be like this:
+
+`MONGO_URI=mongodb:/USER:PASSWORD@my-release-mongodb:27017/DB_NAME?authSource=DB_NAME`
+
+to generate base64 string: 
+
+`echo mongodb://USER:PASSWORD@my-release-mongodb:27017/DB_NAME?authSource=DB_NAME | base64`
+
+To set the credentials for mongodb go to `./mongodb/values.yaml`, example:
+
+```
+mongodbUsername: guillaume
+mongodbPassword: vJh5oW8r^46TV
+mongodbDatabase: vigilant
+```
+
+which set up the config for the non-root database and user
+You will also need to modify `seed-conf.yaml` if you change the user or service name.
+
+To deploy the stack you will need on your computer:
+
+```
+kubectl (tested with 1.15.2)
+helm (tested with 2.12.2)
+```
+and kubectl configured to a running cluster.
+You can run the deployment script:
+
+`./deploy-app.sh`
+
+This will install all the components necessary on the cluster and initialize the mongodb database with some data.
+
+Once it is done you can check pods are running with:
+
+`kubectl get pods --all-namespaces`
+
+and if you want to reach the application you can use:
+`kubectl get svc`
+to find out on which port the service `python-svc` has been exposed. I intentionnally used a `NodePort` type of service because I have been testing this on a local kubernetes cluster (docker-for-mac). You could easily change the service type to LoadBalancer on a cloud provider to expose publicly the API via a public IP (port 80)
+
+Check the API at `http://localhost:PORT/api/v1/records`
+
+You are all set!
+
+I hope you will appreciate this work as much as I enjoyed doing it. If you have any questions or remarks feel free to contact me or open an issue!
+
+Best regards,
