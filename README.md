@@ -191,7 +191,7 @@ We want to fix the second endpoint. Return a json object instead of a json array
 
 ### Challenge 2. Test the application in any CI/CD system
 
-![CICD](./assets/ci.cd.png)
+![CICD](./app/assets/ci.cd.png)
 
 As a good devops engineer, you know the advantages of running tasks in an automated way. There are some CI/CD systems that can be used to make it happen.
 Choose one, travis-ci, gitlab-ci, circleci or whatever you prefer. Give us a successful pipeline.
