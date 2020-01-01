@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: seed-conf
+data:
+  user: guillaume
+  mongo-host: my-release-mongodb

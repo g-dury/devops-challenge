@@ -1,4 +1,4 @@
-FROM python:3.8.1-alpine
+FROM python:3.7.5-alpine
 
 RUN apk --update add bash nano
 COPY ./requirements.txt /var/www/requirements.txt
